@@ -7,9 +7,6 @@
 
 > Complete pipeline for assessing bilateral movement asymmetries using motion capture, inverse kinematics, and custom data processing. Demonstrates practical workflow from capture to biomechanical interpretation.
 
-**Status:** Master's research project (2024-2025) | **Subject:** 1 competitive athlete | **Trials:** 37  
-**Key finding:** Cross-correlation r = 0.957 (bilateral knee synchronization)
-
 ## Visualization
 
 ### Capture → Kinematics Workflow
