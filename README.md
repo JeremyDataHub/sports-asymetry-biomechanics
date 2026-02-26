@@ -39,7 +39,7 @@
 
 Indicates excellent bilateral coordination despite small amplitude asymmetries.
 
-## Data Pipeline
+## Pipeline
 
 Raw capture (.c3d) → Python preprocessing → 3D trajectories (.trc) → OpenSim IK → Joint angles → Asymmetry analysis
 
