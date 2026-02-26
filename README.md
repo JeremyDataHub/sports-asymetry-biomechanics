@@ -18,13 +18,10 @@
 
 ## Results
 
-### Bilateral Synchronization
+### Range of Motion Across Movements
 
-**Cross-correlation analysis (knee angles):**
-- **r = 0.957** — strong bilateral similarity
-- **lag = 0 frames** — perfect temporal alignment
-
-Indicates excellent bilateral coordination despite small amplitude asymmetries.
+![ROM Vertical Jumps](results/ROM_SJ.png)
+*Example: ROM during vertical jumps. Complete ROM analysis for all conditions (SJ, CMJ, walking, running at 2 speeds, cycling at 2 cadences) in `results/` folder.*
 
 ### Asymmetry Index Instability & Solution
 
@@ -34,10 +31,13 @@ Indicates excellent bilateral coordination despite small amplitude asymmetries.
 ![Normalized Symmetry Index Solution](results/NSI_comparison.png)
 *Right: Normalized Symmetry Index (NSI) stabilizes values to -60% to +60%, enabling reliable cycle-by-cycle analysis.*
 
-### Range of Motion Across Movements
+### Bilateral Synchronization
 
-![ROM Vertical Jumps](results/ROM_SJ.png)
-*Example: ROM during vertical jumps. Complete ROM analysis for all conditions (SJ, CMJ, walking, running at 2 speeds, cycling at 2 cadences) in `results/` folder.*
+**Cross-correlation analysis (knee angles):**
+- **r = 0.957** — strong bilateral similarity
+- **lag = 0 frames** — perfect temporal alignment
+
+Indicates excellent bilateral coordination despite small amplitude asymmetries.
 
 ## Data Pipeline
 
@@ -78,46 +78,6 @@ Both scripts include professional logging, type hints, complete docstrings, CLI 
 | Biomechanics | OpenSim (scaling, IK, inverse dynamics) |
 | Force Analysis | AMTI + Kistler force plates (1000 Hz) |
 | Visualization | Matplotlib, Qualisys Track Manager |
-
-## Methodology
-
-### Capture Protocol
-
-- **Subject:** Competitive handball player, 80 kg
-- **Marker set:** 49 full-body markers (M2S model) + 5 custom markers
-- **Frame rate:** 120 Hz (motion capture), 1000 Hz (force plates)
-- **Trials:** 37 validated (2 rejected: marker loss)
-
-### Data Processing Workflow
-
-1. **Qualisys Track Manager (QTM)**
-   - Manual labeling (trial 1) → Automatic template labeling (trials 2-37)
-   - Polynomial + relational interpolation for missing markers
-   - Export to .c3d format
-
-2. **Python Preprocessing Pipeline**
-   - Load .c3d, extract 3D coordinates
-   - Apply calibration-based rotation matrix
-   - Generate .trc (kinematics) + GRF XML (dynamics)
-   - Batch process with error handling
-
-3. **OpenSim Analysis**
-   - Scale musculoskeletal model to subject (80 kg, anthropometry)
-   - Inverse kinematics: 3D marker positions → joint angles
-   - Inverse dynamics: angles + GRF → joint torques
-
-### Asymmetry Quantification Methods
-
-Evaluated 4 metrics for left-right comparison:
-
-| Method | Use case | Advantage | Limitation |
-|--------|----------|-----------|-----------|
-| **ROM** | Static/discrete movements | Simple, interpretable | No temporal detail |
-| **Asymmetry Index (SI)** | Overall comparison | Standard in literature | Mathematically unstable (small denominators) |
-| **Normalized SI (NSI)** | Cyclic movements | Controlled range | Somewhat arbitrary normalization |
-| **Cross-correlation** | Cycle similarity | Holistic, phase-aware | Misses specific phase asymmetries |
-
-**Finding:** For cyclic movements (running, cycling), cross-correlation (r = 0.957) most robust. SI generates spurious values when R ≈ L.
 
 ## Limitations
 
