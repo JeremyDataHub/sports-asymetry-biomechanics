@@ -86,7 +86,7 @@ was most reliable. SI generated spurious values due to mathematical instability 
 
 ### Range of Motion Across Movements
 
-![ROM Squat Jump](results/ROMS_SJ.png)
+![ROM Squat Jump](results/ROM_SJ.png)
 *Example: Range of motion during vertical jumps. Complete ROM analysis for all movement 
 conditions (SJ, CMJ, walking, running at 2 speeds, cycling at 2 cadences) available 
 in the `results/` folder.*
