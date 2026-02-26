@@ -39,11 +39,45 @@
 
 Indicates excellent bilateral coordination despite small amplitude asymmetries.
 
-## Pipeline
+## Data Pipeline
 
-Raw capture (.c3d) → Python preprocessing → 3D trajectories (.trc) → OpenSim IK → Joint angles → Asymmetry analysis
-
-**Movements:** Vertical jumps (SJ, CMJ) | Walking | Running (2 speeds) | Cycling (2 cadences)
+```
+16 Qualisys cameras (120 Hz)
+        │
+        ▼
+Qualisys Track Manager
+ ├── Manual marker labeling (trial 1)
+ ├── Automatic template labeling (trials 2-37)
+ ├── Interpolation (missing markers)
+ └── Export to .c3d format
+        │
+        ▼
+c3d_to_trc.py
+ ├── 3D coordinate extraction
+ ├── Reference frame transformation
+ ├── Missing marker handling
+ └── .trc output
+        │
+        ▼
+OpenSim
+ ├── Model scaling
+ ├── Inverse kinematics
+ ├── Joint angle computation
+ └── Inverse dynamics
+        │
+        ▼
+c3d_to_mot.py
+ ├── Force plate extraction
+ ├── Butterworth filtering (6 Hz)
+ ├── Unit conversion (N·mm → N·m)
+ └── GRF XML generation
+        │
+        ▼
+Asymmetry Analysis
+ ├── ROM computation
+ ├── Asymmetry Index (SI, NSI)
+ └── Cross-correlation
+```
 
 ## Scripts
 
