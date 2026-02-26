@@ -9,12 +9,12 @@ motion capture, inverse kinematics, and custom data processing pipelines.
 
 ## Visualization
 
-### Motion Capture → Kinematics
+### Motion Capture → Kinematics Pipeline
 
 <img src="visualization/qualisys_capture.gif" width="48%" alt="Qualisys motion capture"/> 
 <img src="visualization/opensim_kinematics.gif" width="48%" alt="OpenSim inverse kinematics"/>
 
-*Left: Raw 3D marker trajectories (Qualisys). Right: Computed joint angles (OpenSim).*
+*Left: Raw 3D marker trajectories (Qualisys Track Manager). Right: Computed joint angles (OpenSim inverse kinematics).*
 
 ---
 
@@ -46,25 +46,25 @@ Asymmetry analysis (ROM, SI, NSI, cross-correlation)
 
 ## Key Technical Contributions
 
-### 1. Qualisys ↔ OpenSim Pipeline
+### 1. Qualisys ↔ OpenSim Data Pipeline
 
 **Problem:** .c3d files require extensive manual preprocessing before OpenSim compatibility.
 
-**Solution:** Two automated Python scripts:
+**Solution:** Two automated Python scripts handle the complete workflow:
 
-**`c3d_to_trc_transformed.py`** (47 lines)
-- Converts Qualisys .c3d → OpenSim-compatible .trc
+**`c3d_to_trc_transformed.py`** (95 lines)
+- Converts Qualisys .c3d → OpenSim-compatible .trc format
 - Applies rotation matrix transformation (reference frame alignment)
 - Batch processes 37 trials automatically
-- Resolves Y-Z axis swap issue
+- Resolves Y-Z axis swap between capture and OpenSim coordinate systems
 
-**`c3d_en_mot.py`** (103 lines)
+**`c3d_en_mot.py`** (157 lines)
 - Extracts force plate data from .c3d files
 - 4th-order Butterworth low-pass filtering (6 Hz cutoff)
 - Converts moments from N·mm → N·m
 - Generates OpenSim-compatible GRF XML files
 
-**Impact:** 10x faster than manual preprocessing + reproducible workflows
+**Impact:** 10x faster than manual preprocessing + reproducible, version-controlled workflows
 
 ### 2. Asymmetry Analysis Methods
 
@@ -78,32 +78,40 @@ Compared 4 approaches to quantify left-right differences:
 | **Cross-correlation** | Cycle similarity | Holistic view + temporal alignment | Misses specific phase asymmetries |
 
 **Finding:** For cyclic movements (running, cycling), cross-correlation (r = 0.957) 
-was most reliable. SI generated spurious values (-75% to +100%) due to mathematical 
-instability when right ≈ left values.
+was most reliable. SI generated spurious values due to mathematical instability when right ≈ left.
 
 ---
 
 ## Results
 
-### ROM Asymmetries Across Movements
+### Range of Motion Across Movements
 
-![ROM Squat Jump](results/ROM_SJ.png)
-![ROM Counter Movement Jump](results/ROM_CMJ.png)
-![ROM Walking](results/ROM_marche.png)
-![ROM Running](results/ROM_course.png)
-![ROM Cycling](results/ROM_velo.png)
+![ROM Squat Jump](results/ROMS_SJ.png)
+*Example: Range of motion during vertical jumps. Complete ROM analysis for all movement 
+conditions (SJ, CMJ, walking, running at 2 speeds, cycling at 2 cadences) available 
+in the `results/` folder.*
 
-### Asymmetry Index Comparison
+### Asymmetry Index Analysis
 
-![Relative Asymmetry Index](results/asymmetry_relative.png)
+![Asymmetry Index Comparison](results/asymetry_index.png)
+*Relative Asymmetry Index (SI) for knee angle during cycling (Trial 28). Shows numerical 
+instability in cyclic movements, with values oscillating between -75% and +100%.*
+
+### Normalized Symmetry Index
+
 ![Normalized Symmetry Index](results/NSI_comparison.png)
+*NSI stabilizes the SI values to a reasonable range (-60% to +60%), enabling reliable 
+cycle-by-cycle comparison. The three panels show: (top) raw knee angles, (middle) 
+normalized angles, (bottom) computed NSI.*
 
 ### Bilateral Synchronization
 
-![Cross Correlation Analysis](results/cross_correlation.png)
+**Cross-correlation analysis of knee angles:**
+- **Correlation coefficient:** r = 0.957 (strong bilateral similarity)
+- **Temporal lag:** 0 frames (perfect synchronization)
 
-**Key result:** Knee angle cross-correlation r = 0.957 with lag = 0, indicating 
-perfect bilateral temporal alignment despite small amplitude variations.
+This indicates excellent bilateral coordination with synchronized movement patterns 
+despite small amplitude asymmetries in specific joints.
 
 ---
 
@@ -124,7 +132,7 @@ perfect bilateral temporal alignment despite small amplitude variations.
 ### Capture Protocol
 
 - **Subject:** Competitive handball player, 80 kg, male
-- **Marker set:** 49 full-body markers (M2S lab model) + 5 custom markers
+- **Marker set:** 49 full-body markers (M2S Lab model) + 5 custom markers
 - **Frame rate:** 120 Hz (motion capture), 1000 Hz (force plates)
 - **Trials:** 37 validated captures (2 rejected due to marker loss)
 
@@ -150,37 +158,43 @@ perfect bilateral temporal alignment despite small amplitude variations.
 ### Asymmetry Quantification
 
 **Metrics used:**
-- **ROM (Range of Motion):** Peak flexion differences
-- **Asymmetry Index:** SI% = [(R-L)/(R+L)/2] × 100
+- **ROM (Range of Motion):** Peak flexion differences between left and right joints
+- **Asymmetry Index (SI):** SI% = [(R-L)/(R+L)/2] × 100
 - **Normalized SI (NSI):** Stabilized version for cyclic data
-- **Cross-correlation:** Cycle-to-cycle similarity + phase lag
+- **Cross-correlation:** Cycle-to-cycle similarity + phase lag detection
 
 ---
 
 ## Files
 
 **Scripts:**
-- `c3d_to_trc_transformed.py` — Main preprocessing pipeline
-- `c3d_en_mot.py` — Force plate data extraction
+- `c3d_to_trc_transformed.py` — Qualisys .c3d to OpenSim .trc conversion
+- `c3d_en_mot.py` — Force plate data extraction and GRF generation
 
 **Visualizations:**
-- `results/` — Publication-quality figures (ROM, asymmetry indices)
-- `visualization/` — GIFs showing capture → analysis workflow
+- `results/` — Publication-quality ROM and asymmetry analysis figures
+- `visualization/` — GIFs showing capture to kinematics pipeline
 
 ---
 
 ## Key Insights
 
-1. **ROM alone is insufficient** for cyclic movements. Temporal information is critical.
+1. **ROM alone is insufficient for cyclic movements.** Temporal information is critical for understanding asymmetry evolution across movement phases.
 
-2. **SI generates spurious values** when denominators approach zero (classic numerical instability). 
-   NSI partially addresses this but remains somewhat arbitrary.
+2. **SI generates spurious values in cyclic analysis** when denominators approach zero (classic numerical instability). NSI partially addresses this but remains somewhat arbitrary.
 
-3. **Cross-correlation is most robust** for assessing bilateral coordination in cyclic movements. 
-   The r = 0.957 result indicates excellent bilateral symmetry in this athlete.
+3. **Cross-correlation is most robust** for assessing bilateral coordination in cyclic movements. The r = 0.957 result indicates excellent bilateral symmetry in this athlete.
 
-4. **Custom preprocessing is essential.** Qualisys → OpenSim conversion is non-trivial 
-   and benefits from automated, version-controlled scripts.
+4. **Custom preprocessing is essential.** Qualisys → OpenSim conversion is non-trivial and benefits from automated, version-controlled scripts.
+
+---
+
+## Technical Note
+
+Motion capture data was processed using the M2S Laboratory's musculoskeletal model 
+(Université Rennes 2). Visualizations are from OpenSim analyses conducted during 
+this Master's project. Model files are proprietary to the M2S Lab and not included 
+in this repository.
 
 ---
 
@@ -195,8 +209,8 @@ for asymmetry assessment in sports. While academic in scope, it demonstrates:
 - ✅ Scientific rigor (method comparison, limitations discussion, reproducibility)
 
 **Code quality note:** These are research scripts (not production software). For 
-deployment, they would require unit tests, error handling, and validation against 
-reference systems.
+deployment, they would require unit tests, error handling improvements, and validation 
+against reference systems.
 
 ---
 
