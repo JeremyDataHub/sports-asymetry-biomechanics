@@ -39,7 +39,7 @@
 
 Indicates excellent bilateral coordination despite small amplitude asymmetries.
 
-## Data Pipeline
+## Pipeline
 
 ```
 16 Qualisys cameras (120 Hz)
