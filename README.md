@@ -10,8 +10,6 @@
 **Status:** Master's research project (2024-2025) | **Subject:** 1 competitive athlete | **Trials:** 37  
 **Key finding:** Cross-correlation r = 0.957 (bilateral knee synchronization)
 
----
-
 ## Visualization
 
 ### Capture → Kinematics Workflow
@@ -20,8 +18,6 @@
 <img src="visualization/opensim_kinematics.gif" width="48%" alt="OpenSim inverse kinematics"/>
 
 *Left: Raw 3D marker trajectories (Qualisys). Right: Computed joint angles (OpenSim).*
-
----
 
 ## Results
 
@@ -43,55 +39,38 @@ Indicates excellent bilateral coordination despite small amplitude asymmetries.
 
 ### Range of Motion Across Movements
 
-![ROM Vertical Jumps](results/ROMS_SJ.png)
+![ROM Vertical Jumps](results/ROM_SJ.png)
 *Example: ROM during vertical jumps. Complete ROM analysis for all conditions (SJ, CMJ, walking, running at 2 speeds, cycling at 2 cadences) in `results/` folder.*
 
----
-
 ## Data Pipeline
-```
-Raw capture (.c3d)  →  [Python preprocessing]  →  3D trajectories (.trc)
-                  ↓
-          [OpenSim IK]  →  Joint angles  →  Asymmetry analysis
-```
+
+Raw capture (.c3d) → Python preprocessing → 3D trajectories (.trc) → OpenSim IK → Joint angles → Asymmetry analysis
 
 **Movements:** Vertical jumps (SJ, CMJ) | Walking | Running (2 speeds) | Cycling (2 cadences)
-
----
 
 ## Scripts
 
 ### `c3d_to_trc.py` — Qualisys to OpenSim Conversion
-- Converts .c3d → .trc format
-- Applies reference frame transformation (calibration-based rotation matrix)
-- Batch processes 37 trials automatically
-- Handles missing markers via interpolation
+
+Converts .c3d → .trc format with reference frame transformation. Handles missing markers via interpolation and batch processes all trials.
 
 **Usage:**
 ```bash
-python c3d_to_trc.py --batch 1 37  # Process all trials
-python c3d_to_trc.py --input trial0001 --output trial0001_fixed.trc  # Single trial
+python c3d_to_trc.py --batch 1 37
+python c3d_to_trc.py --input trial0001 --output trial0001_fixed.trc
 ```
 
 ### `c3d_to_mot.py` — Force Plate Data Extraction
-- Extracts GRF data from .c3d files
-- 4th-order Butterworth filtering (6 Hz cutoff)
-- Converts moments N·mm → N·m
-- Generates OpenSim-compatible XML
+
+Extracts GRF data from .c3d files with 4th-order Butterworth filtering (6 Hz). Converts moments N·mm → N·m and generates OpenSim-compatible XML.
 
 **Usage:**
 ```bash
-python c3d_to_mot.py --batch 1 37  # Batch processing
+python c3d_to_mot.py --batch 1 37
 python c3d_to_mot.py --input trial0001 --output trial0001_GRF.xml
 ```
 
-**Both scripts include:**
-- Professional logging (error tracking, progress monitoring)
-- Type hints and complete docstrings
-- CLI arguments for flexibility
-- Robust error handling
-
----
+Both scripts include professional logging, type hints, complete docstrings, CLI arguments, and robust error handling.
 
 ## Tech Stack
 
@@ -103,11 +82,10 @@ python c3d_to_mot.py --input trial0001 --output trial0001_GRF.xml
 | Force Analysis | AMTI + Kistler force plates (1000 Hz) |
 | Visualization | Matplotlib, Qualisys Track Manager |
 
----
-
 ## Methodology
 
 ### Capture Protocol
+
 - **Subject:** Competitive handball player, 80 kg
 - **Marker set:** 49 full-body markers (M2S model) + 5 custom markers
 - **Frame rate:** 120 Hz (motion capture), 1000 Hz (force plates)
@@ -144,8 +122,6 @@ Evaluated 4 metrics for left-right comparison:
 
 **Finding:** For cyclic movements (running, cycling), cross-correlation (r = 0.957) most robust. SI generates spurious values when R ≈ L.
 
----
-
 ## Limitations
 
 - Single subject proof-of-concept (small sample size)
@@ -153,18 +129,22 @@ Evaluated 4 metrics for left-right comparison:
 - SI metric unsuitable for cyclic analysis (mathematical singularities)
 - Force plate analysis not extensively explored in this analysis
 
----
+## Installation & Setup
+
+Requirements:
+1. **Qualisys Track Manager** (commercial software)
+2. **OpenSim** (free, open-source)
+3. Python dependencies:
+```bash
+pip install -r requirements.txt
+```
 
 ## Academic Reference
 
-> Birba, J., Giot, B., Le Gall, M. (2024). Emerging technologies and methods for assessing asymmetry during sports movements. Master 2, Digital Sciences and Sports (EUR Digisport), Université Rennes 2.
-
----
+> Birba, J., Giot, B., Le Gall, M. (2024). Emerging technologies and methods for assessing asymmetry during sports movements. Master 2, Digital Sciences and Sports (EUR Digisport), Rennes 2 University.
 
 ## Technical Note
 
-Motion capture data processed using M2S Laboratory musculoskeletal model (Université Rennes 2). Model files proprietary to M2S Lab. Full implementation code available for preprocessing pipeline; Qualisys Track Manager and OpenSim required for reproduction.
-
----
+Motion capture data processed using M2S Laboratory musculoskeletal model (Rennes 2 University). Model files proprietary to M2S Lab. Full implementation code available for preprocessing pipeline; Qualisys Track Manager and OpenSim required for reproduction.
 
 *Jérémy Birba — [LinkedIn](https://linkedin.com/in/birba-jeremy) | [GitHub](https://github.com/JeremyDataHub)*
