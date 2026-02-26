@@ -1,4 +1,4 @@
-# Sports Movement Asymmetry Analysis
+# Sports Movement Asymetry Analysis
 
 [![Python](https://img.shields.io/badge/Python-3.12-blue.svg)](https://www.python.org/)
 [![Qualisys](https://img.shields.io/badge/Qualisys-motion_capture-green.svg)](https://www.qualisys.com/)
