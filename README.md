@@ -11,8 +11,12 @@
 
 ### Capture → Kinematics Workflow
 
-<img src="visualization/qualisys_capture.gif" width="48%" alt="Qualisys motion capture"/> 
-<img src="visualization/opensim_kinematics.gif" width="48%" alt="OpenSim inverse kinematics"/>
+<table>
+  <tr>
+    <td align="center"><img src="visualization/qualisys_capture.gif" width="450" alt="Qualisys motion capture"/><br/><em>Raw 3D marker trajectories (Qualisys)</em></td>
+    <td align="center"><img src="visualization/opensim_kinematics.gif" width="450" alt="OpenSim inverse kinematics"/><br/><em>Computed joint angles (OpenSim)</em></td>
+  </tr>
+</table>
 
 *Left: Raw 3D marker trajectories (Qualisys). Right: Computed joint angles (OpenSim).*
 
